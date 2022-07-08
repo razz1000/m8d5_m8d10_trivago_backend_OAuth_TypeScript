@@ -1,91 +1,87 @@
-import express from "express";
-import createError from "http-errors";
-import AccomodationModel from "./model.js";
-
-import { hostOnlyMiddleware } from "../../auth/hosts.js";
-import { JWTAuthMiddleware } from "../../auth/token.js";
-
-const accomodationRouter = express.Router();
-
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const http_errors_1 = __importDefault(require("http-errors"));
+const model_1 = __importDefault(require("./model"));
+const hosts_1 = require("../../auth/hosts");
+const token_1 = require("../../auth/token");
+const accomodationRouter = express_1.default.Router();
 // POST WORKING!
-accomodationRouter.post(
-  "/",
-  JWTAuthMiddleware,
-  hostOnlyMiddleware,
-  async (req, res, next) => {
+accomodationRouter.post("/", token_1.JWTAuthMiddleware, hosts_1.hostOnlyMiddleware, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      const newPost = new AccomodationModel(req.body);
-      const { _id } = await newPost.save();
-      res.status(201).send({ _id });
-    } catch (error) {
-      next(error);
+        const newPost = new model_1.default(req.body);
+        const { _id } = yield newPost.save();
+        res.status(201).send({ _id });
     }
-  }
-);
-
+    catch (error) {
+        next(error);
+    }
+}));
 //GET WORKING!
-accomodationRouter.get("/", async (req, res, next) => {
-  try {
-    const post = await AccomodationModel.find({});
-    res.send(post);
-  } catch (error) {
-    next(error);
-  }
-});
+accomodationRouter.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const post = yield model_1.default.find({});
+        res.send(post);
+    }
+    catch (error) {
+        next(error);
+    }
+}));
 // WORKS
-accomodationRouter.get("/:Id", async (req, res, next) => {
-  try {
-    const post = await AccomodationModel.findById(req.params.Id);
-    if (post) {
-      res.send(post);
-    } else {
-      next(createError(404, `Post with id ${req.params.Id} not found!`));
+accomodationRouter.get("/:Id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const post = yield model_1.default.findById(req.params.Id);
+        if (post) {
+            res.send(post);
+        }
+        else {
+            next((0, http_errors_1.default)(404, `Post with id ${req.params.Id} not found!`));
+        }
     }
-  } catch (error) {
-    next(error);
-  }
-});
+    catch (error) {
+        next(error);
+    }
+}));
 // Works!
-accomodationRouter.put(
-  "/:Id",
-  JWTAuthMiddleware,
-  hostOnlyMiddleware,
-  async (req, res, next) => {
+accomodationRouter.put("/:Id", token_1.JWTAuthMiddleware, hosts_1.hostOnlyMiddleware, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      const updatedPost = await AccomodationModel.findByIdAndUpdate(
-        req.params.Id,
-        req.body,
-        { new: true, runValidators: true }
-      );
-      if (updatedPost) {
-        res.send(updatedPost);
-      } else {
-        next(createError(404, `Post with id ${req.params.Id} not found!`));
-      }
-    } catch (error) {
-      next(error);
+        const updatedPost = yield model_1.default.findByIdAndUpdate(req.params.Id, req.body, { new: true, runValidators: true });
+        if (updatedPost) {
+            res.send(updatedPost);
+        }
+        else {
+            next((0, http_errors_1.default)(404, `Post with id ${req.params.Id} not found!`));
+        }
     }
-  }
-);
+    catch (error) {
+        next(error);
+    }
+}));
 // WORKS!
-accomodationRouter.delete(
-  "/:postId",
-  JWTAuthMiddleware,
-  hostOnlyMiddleware,
-  async (req, res, next) => {
+accomodationRouter.delete("/:postId", token_1.JWTAuthMiddleware, hosts_1.hostOnlyMiddleware, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      const deletedPost = await AccomodationModel.findByIdAndDelete(
-        req.params.postId
-      );
-      if (deletedPost) {
-        res.status(204).send();
-      } else {
-        next(createError(404, `User with id ${req.params.postId} not found!`));
-      }
-    } catch (error) {
-      next(error);
+        const deletedPost = yield model_1.default.findByIdAndDelete(req.params.postId);
+        if (deletedPost) {
+            res.status(204).send();
+        }
+        else {
+            next((0, http_errors_1.default)(404, `User with id ${req.params.postId} not found!`));
+        }
     }
-  }
-);
-
-export default accomodationRouter;
+    catch (error) {
+        next(error);
+    }
+}));
+exports.default = accomodationRouter;

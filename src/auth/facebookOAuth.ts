@@ -1,4 +1,3 @@
-"use strict";
 /* import passport from "passport";
 import FacebookStrategy from "passport-facebook";
 import { generateAccessTokenForGoogle } from "./tools.js";
